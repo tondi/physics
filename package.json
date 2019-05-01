@@ -1,0 +1,33 @@
+{
+  "name": "physics",
+  "version": "0.0.1",
+  "description": "little fiddle",
+  "main": "index.js",
+  "dependencies": {
+    "rxjs": "6.5.1"
+  },
+  "devDependencies": {
+    "ts-loader": "^5.4.4",
+    "typescript": "^3.4.5",
+    "webpack-dev-server": "^3.3.1",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.1"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --content-base dist/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tondi/physics.git"
+  },
+  "keywords": [
+    "physics"
+  ],
+  "author": "Mateusz Tondos <mtondos2@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tondi/physics/issues"
+  },
+  "homepage": "https://github.com/tondi/physics#readme"
+}
