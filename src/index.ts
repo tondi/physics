@@ -1,4 +1,6 @@
+import App from "./App";
 import Projectile from "./simulations/ProjectileSimulation";
+import UiEvents from "./ui/UiEvents";
 
 /**
  * IDEAS
@@ -11,6 +13,6 @@ import Projectile from "./simulations/ProjectileSimulation";
  * using up/down arrows
  */
 
-
+new UiEvents();
 (new Projectile).render();
 

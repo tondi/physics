@@ -1,4 +1,5 @@
 import drawArrow from "./helpers/drawArrow";
+import Projectile from "./simulations/ProjectileSimulation";
 
 class App {
 
@@ -18,6 +19,7 @@ class App {
         this.ctx.transform(1, 0, 0, -1, 0, this.canvas.height); // rotate to match
 
         this.ctx.lineWidth = 2;
+
     }
 
     renderAxes = () => {
