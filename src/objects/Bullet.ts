@@ -1,5 +1,5 @@
 import app from "../App";
-import {Consts} from "../helpers/Consts";
+import {consts} from "../helpers/Consts";
 
 export default class Bullet {
     // set them in constructor
@@ -21,7 +21,7 @@ export default class Bullet {
         this.initialX + (this.V0 * Math.cos(this.angle) * t);
 
     calculateY = (t: number): number =>
-        this.initialY + this.V0 * Math.sin(this.angle) * t - (Consts.G * t ** 2 / 2);
+        this.initialY + this.V0 * Math.sin(this.angle) * t - (consts.g * t ** 2 / 2);
 
     update(time: number) {
         // console.log(this.x);

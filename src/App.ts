@@ -1,5 +1,6 @@
 import drawArrow from "./helpers/drawArrow";
 import Projectile from "./simulations/ProjectileSimulation";
+import {consts} from "./helpers/Consts";
 
 class App {
 
@@ -18,14 +19,8 @@ class App {
         this.canvas.setAttribute('height', this.clientHeight.toString());
         this.ctx.transform(1, 0, 0, -1, 0, this.canvas.height); // rotate to match
 
-        this.ctx.lineWidth = 2;
-
+        this.ctx.lineWidth = consts.lineWidth;
     }
-
-    renderAxes = () => {
-        drawArrow(this.ctx, 30, 25, 30, this.clientHeight - 100);
-        drawArrow(this.ctx, 30, 25, this.clientWidth - 100, 30);
-    };
 
     // getScaledX = (percentageValue: number) => {
     //     return percentageValue * this.clientWidth / 100;

@@ -19,9 +19,6 @@ import {
     tap, throttle
 } from "rxjs/operators";
 
-const filterArrowsUps =
-    filter((e: KeyboardEvent) => e.code === 'ArrowUp');
-
 export default class UiEvents {
 
     static keyDowns: Observable<Event> = fromEvent(document, 'keydown');
@@ -30,12 +27,13 @@ export default class UiEvents {
     // static isEmitting: boolean = false;
 
     // static arrowEvents$: Subject<any> = new Subject<any>();
+    static mouseMoves = fromEvent(document, 'mousemove');
 
     static filterArrowUps =
-        filter((e: KeyboardEvent) => e.code === 'ArrowUp');
+        filter((e: KeyboardEvent) => e.code === 'ArrowLeft' || e.code === 'ArrowUp');
 
     static filterArrowDowns =
-        filter((e: KeyboardEvent) => e.code === 'ArrowDown');
+        filter((e: KeyboardEvent) => e.code === 'ArrowRight' || e.code === 'ArrowDown');
 
 
     static arrowUpPress$: Observable<any> = UiEvents.keyDowns.pipe(
@@ -74,7 +72,7 @@ export default class UiEvents {
 
     static spaceDowns: Observable<Event> = UiEvents.keyDowns.pipe(
         filter((e: KeyboardEvent) => e.code === 'Space'),
-        throttle(val => interval(300))
+        // throttle(val => interval(300))
     );
 
     constructor() {
@@ -82,8 +80,8 @@ export default class UiEvents {
         // var keyDowns = fromEvent(document, "keydown")
         // var keyUps = fromEvent(document, "keyup");
 
-        UiEvents.keyDowns.subscribe(this.handleKeydown);
-
+        // mouseMoves.subscribe(this.handleKeydown);
+        //
         // var keyPresses = keyDowns
         //     .merge(keyUps)
             // .groupBy(e => e.keyCode)
