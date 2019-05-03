@@ -1,4 +1,5 @@
 import app from "../App";
+import {getPositionInTime} from "../helpers/getPositionInTime";
 import {consts} from "../helpers/Consts";
 
 export default class Bullet {
@@ -17,12 +18,6 @@ export default class Bullet {
         private timeStarted: number
     ) {}
 
-    calculateX = (t: number): number =>
-        this.initialX + (this.V0 * Math.cos(this.angle) * t);
-
-    calculateY = (t: number): number =>
-        this.initialY + this.V0 * Math.sin(this.angle) * t - (consts.g * t ** 2 / 2);
-
     update(time: number) {
         // console.log(this.x);
         const relativeTime = time - this.timeStarted;
@@ -30,8 +25,12 @@ export default class Bullet {
         app.ctx.beginPath();       // Start a new path
         app.ctx.moveTo(this.x, this.y);    // Move the pen to (30, 50)
 
-        this.x = this.calculateX(relativeTime);
-        this.y = this.calculateY(relativeTime);
+        // this.x = this.calculateX(relativeTime);
+        // this.y = this.calculateY(relativeTime);
+
+        const {x, y} = getPositionInTime(this.V0, this.angle, relativeTime);
+        this.x = x + consts.axis.startX;
+        this.y = y + consts.axis.startY;
 
         app.ctx.lineTo(this.x, this.y);
         app.ctx.stroke();

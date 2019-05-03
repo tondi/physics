@@ -17,7 +17,6 @@ import {consts} from "../helpers/Consts";
 export default class ProjectileSimulation extends Simulation {
 
     bullets: Bullet[] = [];
-    angle: number;
     startVector: StartVector;
 
     constructor() {
@@ -56,7 +55,7 @@ export default class ProjectileSimulation extends Simulation {
         this.bullets.forEach(bullet => bullet.update(this.t));
         this.startVector.render(app.ctx);
 
-        app.ctx.strokeStyle = 'rgba(0,0,0, 0.5)';
+        // app.ctx.strokeStyle = 'rgba(0,0,0, 0.8)';
         renderAxes(app.ctx, app.clientWidth - 100, app.clientHeight - 100);
         app.ctx.strokeStyle = 'rgba(0,0,0, 1)';
 

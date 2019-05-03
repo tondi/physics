@@ -1,6 +1,6 @@
 import {consts} from "./Consts";
 
-interface Coords {
+export interface Coords {
     x: number,
     y: number
 }
