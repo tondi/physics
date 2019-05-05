@@ -10,14 +10,32 @@
         body {
             margin: 0;
             padding: 0;
+
+            font: 17px "Source Sans Pro", sans-serif;
         }
         #canvas {
             display: block;
+
+            height: 100%;
+            width: 100%;
+        }
+
+        .hud {
+            position: fixed;
+            top: 24px;
+            right: 32px;
+
+            display: flex;
+            flex-flow: column nowrap;
         }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
+    <div id="hud" class="hud">
+        <span class="hud__time">
+        </span>
+    </div>
 </body>
 <script src="bundle.js"></script>
 </html>

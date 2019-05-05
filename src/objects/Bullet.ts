@@ -1,14 +1,16 @@
-import app from "../App";
 import {getPositionInTime} from "../helpers/getPositionInTime";
-import {consts} from "../helpers/Consts";
+import {consts} from "../consts/consts";
+import {Renderable} from "./interfaces/Renderable";
+import app from "../App";
 
-export default class Bullet {
+export default class Bullet implements Renderable {
     // set them in constructor
     // initialX: number = 50;
     // initialY: number = 200;
 
     x: number;
     y: number;
+    isExterminable: boolean = false;
 
     constructor(
         private initialX: number = 50,
@@ -18,21 +20,32 @@ export default class Bullet {
         private timeStarted: number
     ) {}
 
-    update(time: number) {
-        // console.log(this.x);
+    render(ctx: CanvasRenderingContext2D, time: number): void {
         const relativeTime = time - this.timeStarted;
 
-        app.ctx.beginPath();       // Start a new path
-        app.ctx.moveTo(this.x, this.y);    // Move the pen to (30, 50)
-
-        // this.x = this.calculateX(relativeTime);
-        // this.y = this.calculateY(relativeTime);
+        const lastX = this.x;
+        const lastY = this.y;
 
         const {x, y} = getPositionInTime(this.V0, this.angle, relativeTime);
         this.x = x + consts.axis.startX;
         this.y = y + consts.axis.startY;
 
-        app.ctx.lineTo(this.x, this.y);
-        app.ctx.stroke();
+        const exceedsLimits: boolean = this.x > app.clientWidth || this.y < consts.axis.startY;
+        !this.isExterminable && exceedsLimits && ctx.fillRect(this.x - 20, this.y, 20, 20);
+        if(exceedsLimits) {
+            this.isExterminable = true;
+            return;
+        }
+
+        ctx.shadowColor = 'red';
+        ctx.shadowBlur = 7;
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+
+        ctx.lineTo(this.x, this.y);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
     }
 }

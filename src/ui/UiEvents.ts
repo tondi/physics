@@ -23,6 +23,7 @@ export default class UiEvents {
 
     static keyDowns: Observable<Event> = fromEvent(document, 'keydown');
     static keyUps: Observable<Event> = fromEvent(document, 'keyup');
+    static mouseClicks: Observable<Event> = fromEvent(document, 'click');
 
     // static isEmitting: boolean = false;
 

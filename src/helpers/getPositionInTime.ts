@@ -1,4 +1,4 @@
-import {consts} from "./Consts";
+import {consts} from "../consts/consts";
 import {Coords} from "./getXYfromAngleAndHypotenuse";
 
 export const getPositionInTime = (V0: number, angle: number, t: number): Coords => ({

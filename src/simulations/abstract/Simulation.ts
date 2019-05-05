@@ -9,8 +9,5 @@ export default abstract class Simulation {
         app.ctx.clearRect(0,0, app.clientWidth, app.clientHeight);
     };
 
-    incrementTime = () => this.t += 0.1;
-
-    t: number = 0;
 }
 

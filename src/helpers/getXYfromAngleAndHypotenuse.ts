@@ -1,4 +1,4 @@
-import {consts} from "./Consts";
+import {consts} from "../consts/consts";
 
 export interface Coords {
     x: number,

@@ -1,15 +1,18 @@
 import drawArrow from "./drawArrow";
-import {consts} from "./Consts";
+import {consts} from "../consts/consts";
+import {appendText} from "./appendText";
 
-const crossingXOffset = consts.axis.startX - 15;
-const crossingYOffset = consts.axis.startY - 15;
+const crossingXOffset = consts.axis.startX - 20;
+const crossingYOffset = consts.axis.startY - 20;
 
 export const renderAxes = (ctx: CanvasRenderingContext2D, toX: number, toY: number) => {
 
-    ctx.lineWidth = 0.5;
-
     drawArrow(ctx, consts.axis.startX, consts.axis.startY - crossingYOffset, consts.axis.startX, toY);
-    drawArrow(ctx, consts.axis.startX - crossingXOffset, consts.axis.startY, toX, consts.axis.startX);
+    drawArrow(ctx, consts.axis.startX - crossingXOffset, consts.axis.startY, toX, consts.axis.startY);
 
-    ctx.lineWidth = consts.lineWidth;
+    appendText(ctx, () => {
+        ctx.fillText('x', toX - crossingXOffset, -consts.axis.startY + crossingYOffset);
+        ctx.fillText('y', consts.axis.startX - crossingXOffset, -toY + crossingYOffset);
+    });
+
 };

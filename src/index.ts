@@ -1,18 +1,15 @@
 import App from "./App";
 import Projectile from "./simulations/ProjectileSimulation";
 import UiEvents from "./ui/UiEvents";
+import Hud from "./ui/Hud";
+import {TimeService} from "./services/TimeService";
 
 /**
  * IDEAS
- * draw coordinate axes
- * make point class
- *
- * add menu for other simulations
- * shot a bullet in interval
- * basing on an angle set by user
- * using up/down arrows
  */
 
 new UiEvents();
-(new Projectile).render();
+const timeService = new TimeService();
+const hud = new Hud(timeService);
+const projectileSimulation = (new Projectile(timeService, hud)).render();
 

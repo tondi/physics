@@ -6,10 +6,12 @@ import Bullet from "../objects/Bullet";
 import app from "../App";
 import UiEvents from "../ui/UiEvents";
 import {renderAxes} from "../helpers/drawAxes";
-import drawV0 from "../helpers/drawV0";
-import drawArrow from "../helpers/drawArrow";
 import StartVector from "../objects/StartVector";
-import {consts} from "../helpers/Consts";
+import {consts} from "../consts/consts";
+import {ITimeService} from "../services/TimeService";
+import Hud from "../ui/Hud";
+import Tank from "../objects/Tank";
+import Ground from "../objects/Ground";
 
 /**
  * Horizontal throw
@@ -17,17 +19,20 @@ import {consts} from "../helpers/Consts";
 export default class ProjectileSimulation extends Simulation {
 
     bullets: Bullet[] = [];
+    tanks: Tank[] = [];
+    // ground: Ground;
     startVector: StartVector;
 
-    constructor() {
+    constructor(private timeService: ITimeService, private hud: Hud) {
         super();
 
-        // UiEvents.arrowUpPress$.subscribe(() => this.angle += Math.PI / 360 * 4);
-        // UiEvents.arrowDownPress$.subscribe(() => this.angle -= Math.PI / 360 * 4);
         UiEvents.spaceDowns.subscribe(this.fire);
+        UiEvents.mouseClicks.subscribe(this.fire);
 
         this.startVector = new StartVector();
-        this.bullets.push(new Bullet(50, 200, 100, this.startVector.angle, this.t));
+        // this.ground = new Ground();
+
+        this.tanks.push(new Tank());
     }
 
     fire = () => {
@@ -38,26 +43,46 @@ export default class ProjectileSimulation extends Simulation {
                 consts.axis.startY,
                 this.startVector.vectorValue,
                 this.startVector.angle,
-                this.t
+                this.timeService.absoluteTime
             )
-        )
+        );
+
+        this.hud.resetTime();
+    };
+
+    checkCollision = () => {
+        this.bullets.forEach(bullet => {
+            this.tanks.forEach(tank => {
+                const right = tank.x + tank.width;
+                const upper = tank.y + tank.height;
+
+                if(
+                    bullet.x > tank.x && bullet.x < right &&
+                    bullet.y > tank.y && bullet.y < upper
+                ) {
+                    tank.isDead = true;
+                }
+            })
+        })
     };
 
     render = (): void => {
-
-        // console.log(this.angle);
-
-
         this.clear();
+        this.timeService.incrementTime();
 
-        this.incrementTime();
-
-        this.bullets.forEach(bullet => bullet.update(this.t));
+        renderAxes(app.ctx, app.clientWidth - consts.axis.startX, app.clientHeight - consts.axis.startY);
         this.startVector.render(app.ctx);
+        this.bullets.forEach(bullet => bullet.render(app.ctx, this.timeService.absoluteTime));
+        this.hud.render();
 
-        // app.ctx.strokeStyle = 'rgba(0,0,0, 0.8)';
-        renderAxes(app.ctx, app.clientWidth - 100, app.clientHeight - 100);
-        app.ctx.strokeStyle = 'rgba(0,0,0, 1)';
+        // if(this.timeService.absoluteTime % 20 === 0) {
+        //     this.tanks.push(new Tank());
+        // }
+        // this.bullets.length && console.log(this.bullets[0].y);
+
+        this.checkCollision();
+        this.tanks.forEach(tank => tank.render(app.ctx, this.timeService.absoluteTime))
+        // this.ground.render(app.ctx);
 
         window.requestAnimationFrame(this.render);
     };
