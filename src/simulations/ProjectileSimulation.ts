@@ -9,6 +9,7 @@ import {ITimeService} from "../services/TimeService";
 import Hud from "../ui/Hud";
 import Tank from "../objects/Tank";
 import {Exterminable} from "../objects/interfaces/Exterminable";
+import TrajectoryPrediction from "../objects/TrajectoryPrediction";
 
 /**
  * Horizontal throw
@@ -18,6 +19,7 @@ export default class ProjectileSimulation extends Simulation {
     bullets: Bullet[] = [];
     tanks: Tank[] = [];
     startVector: StartVector;
+    trajectoryPrediction: TrajectoryPrediction;
 
     constructor(
         private ctx: CanvasRenderingContext2D,
@@ -27,9 +29,10 @@ export default class ProjectileSimulation extends Simulation {
         super();
 
         UiEvents.spaceEvents.subscribe(this.fire);
-        UiEvents.mouseEvents.subscribe(this.fire);
+        UiEvents.pointerPresses.subscribe(this.fire);
 
         this.startVector = new StartVector();
+        this.trajectoryPrediction = new TrajectoryPrediction(hud);
         // interval(5000).subscribe(this.spawnTank);
     }
 
@@ -71,6 +74,8 @@ export default class ProjectileSimulation extends Simulation {
         const notExterminable = (object: Exterminable) => !object.isExterminable;
         this.tanks = this.tanks.filter(notExterminable);
         this.bullets = this.bullets.filter(notExterminable);
+
+        // console.log(this.bullets)
     };
 
     render = (): void => {
@@ -79,6 +84,7 @@ export default class ProjectileSimulation extends Simulation {
 
         renderAxes(app.ctx, app.clientWidth - consts.axis.startX, app.clientHeight - consts.axis.startY);
         this.startVector.render(app.ctx);
+        this.trajectoryPrediction.render(this.ctx, this.startVector.angle, this.startVector.vectorValue);
         this.bullets.forEach(bullet => bullet.render(app.ctx, this.timeService.absoluteTime));
         this.hud.render();
 

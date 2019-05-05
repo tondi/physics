@@ -29,6 +29,14 @@
             flex-flow: column nowrap;
             align-items: flex-end;
         }
+
+        .hud__settings label {
+            cursor: pointer;
+        }
+
+        .hud__show-trajectory-prediction {
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -39,8 +47,13 @@
         </span>
         <div class="hud__time-container">
             <span>Time since last shot: </span>
-            <span class="hud__time">
-            </span>
+            <span class="hud__time"></span>
+        </div>
+        <div class="hud__settings">
+            <label>
+                <span>Show predicted trajectory:</span>
+                <input type="checkbox" class="hud__show-trajectory-prediction"/>
+            </label>
         </div>
     </div>
 </body>

@@ -9,6 +9,7 @@ import {
     takeUntil,
     tap,
 } from "rxjs/operators";
+import app from "../App";
 
 export default class UiEvents {
 
@@ -23,22 +24,41 @@ export default class UiEvents {
         UiEvents.filterNonSpaces
     );
 
-    static mouseDowns: Observable<Event> = fromEvent(document, 'mousedown');
-    static mouseUps: Observable<Event> = fromEvent(document, 'mouseup');
-    static mouseMoves: Observable<Event> = fromEvent(document, 'mousemove');
-    static mouseEvents: Subject<Event> = new Subject<Event>();
+    static mouseMoves: Observable<Event> = fromEvent(app.canvas, 'mousemove');
+    static mouseDowns: Observable<Event> = fromEvent(app.canvas, 'mousedown');
+    static mouseUps: Observable<Event> = fromEvent(app.canvas, 'mouseup');
+
+    static touchMoves: Observable<Event> = fromEvent(app.canvas, 'touchmove');
+    static touchStarts: Observable<Event> = fromEvent(app.canvas, 'touchstart');
+    static touchEnds: Observable<Event> = fromEvent(app.canvas, 'touchend');
+
+    static pointerPresses: Subject<Event> = new Subject<Event>();
     static spaceEvents: Subject<Event> = new Subject<Event>();
 
     static isSpacePressed: boolean = false;
-    static readonly interval: number = 300;
+    static readonly interval: number = 200;
 
     constructor() {
+        // UiEvents.mouseMoves.subscribe((e: MouseEvent) => UiEvents.pointerMoves.next(e));
+        // UiEvents.touchMoves.subscribe((e: TouchEvent) => UiEvents.pointerMoves.next(e));
+
         UiEvents.mouseDowns.subscribe(
             () => {
-                UiEvents.mouseEvents.next();
+                UiEvents.pointerPresses.next();
                 interval(UiEvents.interval).pipe(
-                    tap(() => UiEvents.mouseEvents.next()),
+                    tap(() => UiEvents.pointerPresses.next()),
                     takeUntil(UiEvents.mouseUps)
+                ).subscribe(null)
+            }
+        );
+
+        // TODO extract common logic to handleStartStop method
+        UiEvents.touchStarts.subscribe(
+            () => {
+                UiEvents.pointerPresses.next();
+                interval(UiEvents.interval).pipe(
+                    tap(() => UiEvents.pointerPresses.next()),
+                    takeUntil(UiEvents.touchEnds)
                 ).subscribe(null)
             }
         );

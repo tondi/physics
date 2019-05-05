@@ -3,5 +3,5 @@ export const appendText = (ctx: CanvasRenderingContext2D, callback: () => void) 
     ctx.scale(1, -1);
     callback();
     ctx.stroke();
-    ctx.restore()
+    ctx.restore();
 };

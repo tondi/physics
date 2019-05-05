@@ -1,4 +1,5 @@
 import {consts} from "./consts/consts";
+import {fromEvent, Observable} from "rxjs";
 
 class App {
 
@@ -6,13 +7,23 @@ class App {
     clientHeight: number;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    dpi: number;
+
+    screenResizes: Observable<Event> = fromEvent(window, 'resize');
 
     constructor() {
-        let dpi = window.devicePixelRatio;
+        this.init();
 
-        this.clientWidth = document.documentElement.clientWidth * dpi;
-        this.clientHeight = document.documentElement.clientHeight * dpi;
+        this.screenResizes.subscribe(this.init);
+    }
+
+    init = () => {
+        this.dpi = window.devicePixelRatio;
+
+        this.clientWidth = document.documentElement.clientWidth * this.dpi;
+        this.clientHeight = document.documentElement.clientHeight * this.dpi;
         this.canvas = document.querySelector('#canvas');
+
         this.ctx = this.canvas.getContext('2d', {
             alpha: false
         });
@@ -23,9 +34,9 @@ class App {
         let realHeight = +getComputedStyle(this.canvas).getPropertyValue("height").slice(0, -2);
         let realWidth = +getComputedStyle(this.canvas).getPropertyValue("width").slice(0, -2);
 
-        // scale to assure sharpness on high dpi screens
-        this.canvas.setAttribute('height', realHeight * dpi + '');
-        this.canvas.setAttribute('width', realWidth * dpi + '');
+        // scale to assure sharpness on high this.dpi screens
+        this.canvas.setAttribute('height', realHeight * this.dpi + '');
+        this.canvas.setAttribute('width', realWidth * this.dpi + '');
 
         // rotate to match physical-like coordinate system
         this.ctx.transform(1, 0, 0, -1, 0, this.clientHeight);
