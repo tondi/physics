@@ -1,98 +1,68 @@
 import {
-    empty,
     fromEvent,
     interval,
     Observable,
     Subject,
-    Subscribable,
-    Subscription,
-    timer
 } from 'rxjs';
 import {
     filter,
-    flatMap,
-    map, mapTo,
-    startWith,
-    switchMap,
-    switchMapTo,
-    takeUntil, takeWhile,
-    tap, throttle
+    takeUntil,,
+    tap,
 } from "rxjs/operators";
 
 export default class UiEvents {
 
     static keyDowns: Observable<Event> = fromEvent(document, 'keydown');
     static keyUps: Observable<Event> = fromEvent(document, 'keyup');
-    static mouseClicks: Observable<Event> = fromEvent(document, 'click');
 
-    // static isEmitting: boolean = false;
-
-    // static arrowEvents$: Subject<any> = new Subject<any>();
-    static mouseMoves = fromEvent(document, 'mousemove');
-
-    static filterArrowUps =
-        filter((e: KeyboardEvent) => e.code === 'ArrowLeft' || e.code === 'ArrowUp');
-
-    static filterArrowDowns =
-        filter((e: KeyboardEvent) => e.code === 'ArrowRight' || e.code === 'ArrowDown');
-
-
-    static arrowUpPress$: Observable<any> = UiEvents.keyDowns.pipe(
-        UiEvents.filterArrowUps,
-        // tap(_ => UiEvents.isEmitting = true)
-    );
-
-    // static _arrowUpRelase$: Observable<any> = UiEvents.keyUps.pipe(
-    //     filterArrowUps,
-    //     // tap(_ => UiEvents.isEmitting = false)
-    // );
-
-    static arrowDownPress$: Observable<any> = UiEvents.keyDowns.pipe(
-      UiEvents.filterArrowDowns
-    );
-
-    // static arrowDowns: Subscription = UiEvents.arrowUpPress$.subscribe(
-    //     // tap(e => console.log(e)),
-    //     // filter(_ => UiEvents.isEmitting),
-    //     // takeUntil(UiEvents._arrowUp)
-    //     () => {
-    //         console.log('fire')
-    //         interval(100).pipe(
-    //             tap(_ => console.log(_)),
-    //             tap(() => UiEvents.arrowEvents$.next()),
-    //             takeUntil(UiEvents._arrowUpRelase$)
-    //         )
-    //     }
-    // );
-// ,
-//     takeUntil<Event>(UiEvents.keyUps.pipe(
-//         filter((e: KeyboardEvent) => e.code === 'ArrowUp'),
-// )),
-//     tap(e => console.log('done')),
-//     flatMap(e => interval(10))
-
+    static filterNonSpaces = filter((e: KeyboardEvent) => e.code === 'Space');
     static spaceDowns: Observable<Event> = UiEvents.keyDowns.pipe(
-        filter((e: KeyboardEvent) => e.code === 'Space'),
-        // throttle(val => interval(300))
+        UiEvents.filterNonSpaces
     );
+    static spaceUps: Observable<Event> = UiEvents.keyUps.pipe(
+        UiEvents.filterNonSpaces
+    );
+
+    static mouseDowns: Observable<Event> = fromEvent(document, 'mousedown');
+    static mouseUps: Observable<Event> = fromEvent(document, 'mouseup');
+    static mouseMoves: Observable<Event> = fromEvent(document, 'mousemove');
+    static mouseEvents: Subject<Event> = new Subject<Event>();
+    static spaceEvents: Subject<Event> = new Subject<Event>();
+
+    static isSpacePressed: boolean = false;
+    static readonly interval: number = 300;
 
     constructor() {
+        UiEvents.mouseDowns.subscribe(
+            () => {
+                UiEvents.mouseEvents.next();
+                interval(UiEvents.interval).pipe(
+                    tap(() => UiEvents.mouseEvents.next()),
+                    takeUntil(UiEvents.mouseUps)
+                ).subscribe(null)
+            }
+        );
 
-        // var keyDowns = fromEvent(document, "keydown")
-        // var keyUps = fromEvent(document, "keyup");
+        UiEvents.spaceUps.subscribe(() => {
+            UiEvents.isSpacePressed = false;
+        });
 
-        // mouseMoves.subscribe(this.handleKeydown);
-        //
-        // var keyPresses = keyDowns
-        //     .merge(keyUps)
-            // .groupBy(e => e.keyCode)
-            // .map(group => group.distinctUntilChanged(null, e => e.type))
-            // .mergeAll()
-    }
+        UiEvents.spaceDowns.subscribe(
+            () => {
 
-    handleKeydown = (e: KeyboardEvent) => {
-        // e.preventDefault();
-        console.log(e)
+                if(UiEvents.isSpacePressed) {
+                    return;
+                }
+                UiEvents.isSpacePressed = true;
+
+                UiEvents.spaceEvents.next();
+                interval(UiEvents.interval).pipe(
+                    tap(() => UiEvents.spaceEvents.next()),
+                    takeUntil(UiEvents.spaceUps)
+                ).subscribe(null)
+            }
+        )
+
     }
 }
 

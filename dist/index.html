@@ -27,14 +27,21 @@
 
             display: flex;
             flex-flow: column nowrap;
+            align-items: flex-end;
         }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
     <div id="hud" class="hud">
-        <span class="hud__time">
+        <span class="hud__info">
+            Use mouse/space to shot
         </span>
+        <div class="hud__time-container">
+            <span>Time since last shot: </span>
+            <span class="hud__time">
+            </span>
+        </div>
     </div>
 </body>
 <script src="bundle.js"></script>

@@ -1,6 +1,3 @@
-
-// implement stop rendering
-// add responsiveness
 import Simulation from "./abstract/Simulation";
 import Bullet from "../objects/Bullet";
 import app from "../App";
@@ -11,7 +8,7 @@ import {consts} from "../consts/consts";
 import {ITimeService} from "../services/TimeService";
 import Hud from "../ui/Hud";
 import Tank from "../objects/Tank";
-import Ground from "../objects/Ground";
+import {Exterminable} from "../objects/interfaces/Exterminable";
 
 /**
  * Horizontal throw
@@ -20,23 +17,27 @@ export default class ProjectileSimulation extends Simulation {
 
     bullets: Bullet[] = [];
     tanks: Tank[] = [];
-    // ground: Ground;
     startVector: StartVector;
 
-    constructor(private timeService: ITimeService, private hud: Hud) {
+    constructor(
+        private ctx: CanvasRenderingContext2D,
+        private timeService: ITimeService,
+        private hud: Hud
+    ) {
         super();
 
-        UiEvents.spaceDowns.subscribe(this.fire);
-        UiEvents.mouseClicks.subscribe(this.fire);
+        UiEvents.spaceEvents.subscribe(this.fire);
+        UiEvents.mouseEvents.subscribe(this.fire);
 
         this.startVector = new StartVector();
-        // this.ground = new Ground();
-
-        this.tanks.push(new Tank());
+        // interval(5000).subscribe(this.spawnTank);
     }
 
+    spawnTank = () => {
+        this.tanks.push(new Tank());
+    };
+
     fire = () => {
-        // console.log('fire');
         this.bullets.push(
             new Bullet(
                 consts.axis.startX,
@@ -60,10 +61,16 @@ export default class ProjectileSimulation extends Simulation {
                     bullet.x > tank.x && bullet.x < right &&
                     bullet.y > tank.y && bullet.y < upper
                 ) {
-                    tank.isDead = true;
+                    tank.isExterminable = true;
                 }
             })
         })
+    };
+
+    performGC = () => {
+        const notExterminable = (object: Exterminable) => !object.isExterminable;
+        this.tanks = this.tanks.filter(notExterminable);
+        this.bullets = this.bullets.filter(notExterminable);
     };
 
     render = (): void => {
@@ -75,14 +82,10 @@ export default class ProjectileSimulation extends Simulation {
         this.bullets.forEach(bullet => bullet.render(app.ctx, this.timeService.absoluteTime));
         this.hud.render();
 
-        // if(this.timeService.absoluteTime % 20 === 0) {
-        //     this.tanks.push(new Tank());
-        // }
-        // this.bullets.length && console.log(this.bullets[0].y);
-
         this.checkCollision();
         this.tanks.forEach(tank => tank.render(app.ctx, this.timeService.absoluteTime))
-        // this.ground.render(app.ctx);
+
+        this.performGC();
 
         window.requestAnimationFrame(this.render);
     };

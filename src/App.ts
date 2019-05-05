@@ -8,57 +8,32 @@ class App {
     ctx: CanvasRenderingContext2D;
 
     constructor() {
-
         let dpi = window.devicePixelRatio;
-
 
         this.clientWidth = document.documentElement.clientWidth * dpi;
         this.clientHeight = document.documentElement.clientHeight * dpi;
         this.canvas = document.querySelector('#canvas');
-        this.ctx = this.canvas.getContext('2d');
+        this.ctx = this.canvas.getContext('2d', {
+            alpha: false
+        });
 
         this.canvas.setAttribute('width', this.clientWidth.toString());
         this.canvas.setAttribute('height', this.clientHeight.toString());
-        // this.canvas.style.width = this.clientWidth.toString() + 'px';
-        // this.canvas.style.height = this.clientHeight.toString() + 'px';
 
+        let realHeight = +getComputedStyle(this.canvas).getPropertyValue("height").slice(0, -2);
+        let realWidth = +getComputedStyle(this.canvas).getPropertyValue("width").slice(0, -2);
 
-        //get DPI
-        //
-        // //get CSS height
-        // //the + prefix casts it to an integer
-        // //the slice method gets rid of "px"
-        let style_height = +getComputedStyle(this.canvas).getPropertyValue("height").slice(0, -2);
-        //
-        // //get CSS width
-        let style_width = +getComputedStyle(this.canvas).getPropertyValue("width").slice(0, -2);
-        //
-        // //scale the this.canvas
-        this.canvas.setAttribute('height', style_height * dpi + '');
-        this.canvas.setAttribute('width', style_width * dpi + '');
-        // debugger;
+        // scale to assure sharpness on high dpi screens
+        this.canvas.setAttribute('height', realHeight * dpi + '');
+        this.canvas.setAttribute('width', realWidth * dpi + '');
 
-
-        this.ctx.transform(1, 0, 0, -1, 0, this.clientHeight); // rotate to match
+        // rotate to match physical-like coordinate system
+        this.ctx.transform(1, 0, 0, -1, 0, this.clientHeight);
 
         this.ctx.lineWidth = consts.lineWidth;
         this.ctx.font = consts.font;
-        this.ctx.lineCap = "round"
-
-
-        // this.ctx.imageSmoothingQuality = 'medium';
-        // this.ctx.imageSmoothingEnabled = false;
-        // console.log(this.canvas, this.ctx)
-
+        this.ctx.lineCap = "round";
     }
-
-    // getScaledX = (percentageValue: number) => {
-    //     return percentageValue * this.clientWidth / 100;
-    // };
-    //
-    // getScaledY = (percentageValue: number) => {
-    //     return percentageValue * this.clientHeight / 100;
-    // };
 }
 
 const app = new App();
