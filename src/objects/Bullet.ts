@@ -8,7 +8,9 @@ export default class Bullet implements Renderable, Exterminable {
 
     x: number;
     y: number;
+    hasCrashed: boolean = false;
     isExterminable: boolean = false;
+    numberOfCollisionMarksRendered: number = 0;
 
     constructor(
         private initialX: number = consts.axis.startX,
@@ -19,10 +21,30 @@ export default class Bullet implements Renderable, Exterminable {
     ) {}
 
     renderCollision = (ctx: CanvasRenderingContext2D) => {
-        ctx.fillRect(this.x - 20, this.y + 10, 20, 20);
+        ctx.fillRect(
+            this.x - 20 * Math.random(),
+            consts.axis.startY + 10 * Math.random(),
+            10 * Math.random(),
+            10 * Math.random()
+        );
+    };
+
+    handleBulletAfterCrash = (ctx: CanvasRenderingContext2D) => {
+        if(this.numberOfCollisionMarksRendered < 6) {
+            this.renderCollision(ctx);
+            this.numberOfCollisionMarksRendered++;
+            return;
+        }
+
+        this.isExterminable = true;
+        return;
     };
 
     render(ctx: CanvasRenderingContext2D, time: number): void {
+        if(this.hasCrashed) {
+           this.handleBulletAfterCrash(ctx);
+        }
+
         const relativeTime = time - this.timeStarted;
 
         const lastX = this.x;
@@ -35,10 +57,7 @@ export default class Bullet implements Renderable, Exterminable {
         const exceedsLimits: boolean = this.x > app.clientWidth || this.y < consts.axis.startY;
 
         if(exceedsLimits) {
-            if(!this.isExterminable) {
-                this.renderCollision(ctx);
-            }
-            this.isExterminable = true;
+            this.hasCrashed = true;
 
             return;
         }
