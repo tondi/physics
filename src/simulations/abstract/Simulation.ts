@@ -8,9 +8,9 @@ import {consts} from "../../consts/consts";
 export default abstract class Simulation {
 
     clear = () => {
-        // app.ctx.clearRect(0,0, app.clientWidth, app.clientHeight);
+        // app.ctx.clearRect(0,0, app.virtualWidth, app.virtualHeight);
         app.ctx.fillStyle = "#FFF";
-        app.ctx.fillRect(0, 0,  app.clientWidth, app.clientHeight);
+        app.ctx.fillRect(0, 0,  app.virtualWidth, app.virtualHeight);
         app.ctx.fillStyle = consts.black;
     };
 

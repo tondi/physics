@@ -4,7 +4,7 @@ import {Renderable} from "./interfaces/Renderable";
 import {Exterminable} from "./interfaces/Exterminable";
 
 export default class Tank implements Renderable, Exterminable {
-    x: number = app.clientWidth;
+    x: number = app.virtualWidth;
     y: number = 50;
 
     width = 50;

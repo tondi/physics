@@ -1,12 +1,11 @@
 import UiEvents from "../ui/UiEvents";
-import {Subject} from "rxjs";
 import {consts} from "../consts/consts";
 import app from "../App";
 import {getXYfromAngleAndHypotenuse} from "../helpers/getXYfromAngleAndHypotenuse";
-import {getPositionInTime} from "../helpers/getPositionInTime";
 import drawArrow from "../helpers/drawArrow";
 import {appendText} from "../helpers/appendText";
 import {Renderable} from "./interfaces/Renderable";
+import {toDegrees} from "../helpers/toDegrees";
 
 export default class StartVector implements Renderable {
 
@@ -38,7 +37,7 @@ export default class StartVector implements Renderable {
         // begin from left - bottom
         // e.clientY is calculated from top - left
         // therefore subtract to count from bottom
-        const y = app.clientHeight - eventY * app.dpi;
+        const y = app.virtualHeight - eventY * app.dpi;
 
         const calculatedAngle = this.calculateAngleFromZeroZero(x, y);
         this.angle = calculatedAngle;
@@ -71,7 +70,7 @@ export default class StartVector implements Renderable {
         const pointY = y / 2;
 
         // convert to degrees
-        const convertedAngle = (this.angle * 180 / Math.PI).toFixed(0);
+        const convertedAngle = toDegrees(this.angle).toFixed(0);
 
         appendText(ctx, () => {
             ctx.fillText("α = " + convertedAngle + '°', (pointX - 20), -(pointY + 30));

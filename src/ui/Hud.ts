@@ -29,10 +29,8 @@ export default class Hud {
     };
 
     render = () => {
-        const timeToRender = this.timeService.absoluteTime - this.snapshotTime;
-
-        // console.log(this.isTrajectoryEnabled())
-
-        this.timeElement.textContent = timeToRender.toFixed(2).toString();
+        // const timeToRender = this.timeService.absoluteTime - this.snapshotTime;
+        //
+        // this.timeElement.textContent = timeToRender.toFixed(2).toString();
     }
 }
